@@ -18,30 +18,30 @@ Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
 ---
 
 # High-Level Architecture
-                     +----------------------+
-                     |        Grafana       |
-                     |  Dashboards & UI    |
-                     +----------+-----------+
-                                |
-        -------------------------------------------------------
-        |                        |                           |
-     Metrics                   Logs                       Traces
-        |                        |                           |
-        v                        v                           v
-+---------------+        +---------------+         +-----------------------+
-|  Prometheus   |        |     Loki      |         |        Jaeger         |
-+-------+-------+        +-------+-------+         +-----------+-----------+
-        |                        |                             |
-        |                        |                             |
-        v                        v                             v
-+---------------+        +---------------+         +-----------------------+
-| node-exporter |        |   Promtail    |         | OTEL Collector        |
-| kube-state-   |        | (DaemonSet)   |         | (trace pipeline only) |
-| metrics       |        +-------+-------+         +-----------+-----------+
-+-------+-------+                |                             |
-        |                        |                             |
-        v                        v                             v
-     Kubernetes              Node Logs                 Applications
+                 +----------------------+
+                 |        Grafana       |
+                 |   Dashboards & UI   |
+                 +----------+-----------+
+                            |
+    -------------------------------------------------------
+    |                        |                           |
+  Metrics                  Logs                        Traces
+    |                        |                           |
+    v                        v                           v
++---------------+ +---------------+ +-----------------------+
+| Prometheus | | Loki | | Jaeger |
++-------+-------+ +-------+-------+ +-----------+-----------+
+| | |
+| | |
+v v v
++---------------+ +---------------+ +-----------------------+
+| node-exporter | | Promtail | | OTEL Collector |
+| kube-state- | | (DaemonSet) | | (trace pipeline only) |
+| metrics | +-------+-------+ +-----------+-----------+
++-------+-------+ | |
+| | |
+v v v
+Kubernetes Node Logs Applications
 
 
 ---
