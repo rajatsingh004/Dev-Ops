@@ -17,6 +17,43 @@ Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
 
 ---
 
+
+---
+
+## 🖼 Architecture Diagram (Mermaid)
+
+```mermaid
+flowchart TD
+    A[Grafana<br/>Dashboards & UI]
+
+    subgraph Metrics
+        B[Prometheus]
+        C[node-exporter]
+        D[kube-state-metrics]
+        C --> B
+        D --> B
+        E[Kubernetes] --> C
+    end
+
+    subgraph Logs
+        F[Loki]
+        G[Promtail<br/>(DaemonSet)]
+        H[Node Logs] --> G
+        G --> F
+    end
+
+    subgraph Traces
+        I[Jaeger]
+        J[OTEL Collector<br/>(trace pipeline only)]
+        K[Applications] --> J
+        J --> I
+    end
+
+    A --> B
+    A --> F
+    A --> I
+
+
 # High-Level Architecture
                  +----------------------+
                  |        Grafana       |
