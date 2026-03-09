@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: observability
+
+data:
+  alertmanager.yml: |
+    route:
+      receiver: default
+
+    receivers:
+    - name: default
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: observability
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: alertmanager
+
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:v0.26.0
+
+        args:
+        - "--config.file=/etc/alertmanager/alertmanager.yml"
+
+        ports:
+        - containerPort: 9093
+
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alertmanager
+
+      volumes:
+      - name: config
+        configMap:
+          name: alertmanager-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: observability
+
+spec:
+  selector:
+    app: alertmanager
+
+  ports:
+  - port: 9093
