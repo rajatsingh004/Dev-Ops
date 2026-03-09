@@ -17,47 +17,32 @@ Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
 
 ---
 
+## Observability Architecture
 
----
-
----
-
-## 🖼 Architecture Diagram (Mermaid)
-
-```mermaid
-flowchart TD
-    A[Grafana - Dashboards & UI]
-
-    subgraph Metrics
-        B[Prometheus]
-        C[node-exporter]
-        D[kube-state-metrics]
-        E[Kubernetes]
-        E --> C --> B
-        D --> B
-    end
-
-    subgraph Logs
-        F[Loki]
-        G[Promtail DaemonSet]
-        H[Node Logs]
-        H --> G --> F
-    end
-
-    subgraph Traces
-        I[Jaeger]
-        J[OTEL Collector - trace pipeline only]
-        K[Applications]
-        K --> J --> I
-    end
-
-    A --> B
-    A --> F
-    A --> I
-
-
-
-
+                 +----------------------+
+                 |        Grafana       |
+                 |   Dashboards & UI   |
+                 +----------+-----------+
+                            |
+    -------------------------------------------------------
+    |                        |                           |
+  Metrics                  Logs                        Traces
+    |                        |                           |
+    v                        v                           v
++---------------+ +-------------------+ +-----------------------+
+| Prometheus |             | Loki |                 | Jaeger |
++-------+-------+ +---------+---------+ +------------+---------------+
+|                          |                             |
+|                          |                             |
+v                          v                             v
++---------------+ +---------------+ +-----------------------+
+| node-exporter | | Promtail | | OTEL Collector |
+| kube-state- | | (DaemonSet) | | (trace pipeline only) |
+| metrics | +-------+-------+ +-----------+-----------+
++-------+-------+ | |
+| | |
+v v v
+Kubernetes Node Logs Applications
 ---
 
 # Metrics Pipeline
