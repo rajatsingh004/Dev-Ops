@@ -19,30 +19,29 @@ Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
 
 ## Observability Architecture
 
-                 +----------------------+
-                 |        Grafana       |
-                 |   Dashboards & UI   |
-                 +----------+-----------+
+                +-----------------------+
+                |        Grafana        |
+                | Dashboards / Queries  |
+                +-----------+-----------+
                             |
     -------------------------------------------------------
     |                        |                           |
   Metrics                  Logs                        Traces
     |                        |                           |
     v                        v                           v
-+---------------+ +-------------------+ +-----------------------+
-| Prometheus |             | Loki |                 | Jaeger |
-+-------+-------+ +---------+---------+ +------------+---------------+
-|                          |                             |
-|                          |                             |
-v                          v                             v
-+---------------+ +---------------+ +-----------------------+
-| node-exporter | | Promtail | | OTEL Collector |
-| kube-state- | | (DaemonSet) | | (trace pipeline only) |
-| metrics | +-------+-------+ +-----------+-----------+
-+-------+-------+ | |
+  +---------------+ +---------------+ +----------------+
+| Prometheus | | Loki | | Jaeger |
++-------+-------+ +-------+-------+ +--------+-------+
 | | |
 v v v
-Kubernetes Node Logs Applications
++---------------+ +---------------+ +---------------------+
+| node-exporter | | Promtail | | OpenTelemetry |
+| kube-state- | | (DaemonSet) | | Collector |
+| metrics | +-------+-------+ +----------+----------+
++-------+-------+ | |
+| v v
+v Container Logs Applications
+Kubernetes (/var/log/containers)
 ---
 
 # Metrics Pipeline
