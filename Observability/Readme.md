@@ -20,6 +20,8 @@ Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
 
 ---
 
+---
+
 ## 🖼 Architecture Diagram (Mermaid)
 
 ```mermaid
@@ -52,6 +54,7 @@ flowchart TD
     A --> B
     A --> F
     A --> I
+
 
 
 
