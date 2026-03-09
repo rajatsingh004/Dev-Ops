@@ -14,47 +14,34 @@ The stack is built around the three pillars of observability:
 - **Traces**
 
 Visualization is handled centrally using :contentReference[oaicite:0]{index=0}.
-## Components Used
-
-| Signal | Tool |
-|------|------|
-| Metrics | :contentReference[oaicite:1]{index=1} |
-| Logs | :contentReference[oaicite:2]{index=2} |
-| Traces | :contentReference[oaicite:3]{index=3} |
-| Trace Processing | :contentReference[oaicite:4]{index=4} |
-| Log Collection | :contentReference[oaicite:5]{index=5} |
-| Node Metrics | :contentReference[oaicite:6]{index=6} |
-| Kubernetes State Metrics | :contentReference[oaicite:7]{index=7} |
-| Alerting | :contentReference[oaicite:8]{index=8} |
-| Visualization | :contentReference[oaicite:9]{index=9} |
 
 ---
 
 # High-Level Architecture
-                +-----------------------+
-                |        Grafana        |
-                | Dashboards / Queries  |
-                +-----------+-----------+
-                            |
-    -------------------------------------------------------
-    |                        |                           |
-  Metrics                  Logs                        Traces
-    |                        |                           |
-    v                        v                           v
-
-+---------------+ +---------------+ +----------------+
-| Prometheus | | Loki | | Jaeger |
-+-------+-------+ +-------+-------+ +--------+-------+
-| | |
-v v v
-+---------------+ +---------------+ +---------------------+
-| node-exporter | | Promtail | | OpenTelemetry |
-| kube-state- | | (DaemonSet) | | Collector |
-| metrics | +-------+-------+ +----------+----------+
-+-------+-------+ | |
-| v v
-v Container Logs Applications
-Kubernetes (/var/log/containers) (instrumented)
+                     +----------------------+
+                     |        Grafana       |
+                     |  Dashboards & UI    |
+                     +----------+-----------+
+                                |
+        -------------------------------------------------------
+        |                        |                           |
+     Metrics                   Logs                       Traces
+        |                        |                           |
+        v                        v                           v
++---------------+        +---------------+         +-----------------------+
+|  Prometheus   |        |     Loki      |         |        Jaeger         |
++-------+-------+        +-------+-------+         +-----------+-----------+
+        |                        |                             |
+        |                        |                             |
+        v                        v                             v
++---------------+        +---------------+         +-----------------------+
+| node-exporter |        |   Promtail    |         | OTEL Collector        |
+| kube-state-   |        | (DaemonSet)   |         | (trace pipeline only) |
+| metrics       |        +-------+-------+         +-----------+-----------+
++-------+-------+                |                             |
+        |                        |                             |
+        v                        v                             v
+     Kubernetes              Node Logs                 Applications
 
 
 ---
